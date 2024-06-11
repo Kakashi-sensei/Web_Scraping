@@ -6,8 +6,159 @@ output: html_document
 ---
 
 ```{r}
+#package
+if (!require("rvest")) install.packages("rvest")
+library(rvest)
 
+download <- read_html("https://www.siop.org/research-publications/tip")
+nodes <- html_elements(download, css="#dnn_D31B_Pane2 a , #dnn_D31B_Pane2 span , em")
+text <- html_text(nodes)
+text
+
+# dynamically generated pages cannnot be done in R because R can only pull once
+
+# how to tell if a page is dynamic or not (static). Using "web developer" extension to disable JavaScript to see if the page to empty
+```
+
+
+
+```{r}
+
+# Here is an example from GPT
+# Ensure the rvest package is installed and loaded
+if (!require("rvest")) install.packages("rvest")
+library(rvest)
+
+# Read the HTML content of the webpage
+url <- "https://www.siop.org/research-publications/tip"
+download <- read_html(url)
+
+# Use appropriate CSS selectors to target the desired elements
+nodes <- html_elements(download, css = "#dnn_D31B_Pane2 a, #dnn_D31B_Pane2 span, em")
+
+# Extract the text content from the selected nodes
+text <- html_text(nodes)
+
+# Print the extracted text
+print(text)
+
+# Function to scrape additional content from a given URL
+scrape_additional_content <- function(link) {
+  full_link <- paste0("https://www.siop.org", link)  # Adjust base URL as needed
+  page <- read_html(full_link)
+  
+  # Adjust the CSS selectors to target the desired elements on the new page
+  content_nodes <- html_elements(page, css = "appropriate_css_selector")
+  content <- html_text(content_nodes)
+  
+  return(content)
+}
+
+# Extract links from the initial page (assuming links are within <a> tags)
+links <- html_elements(download, css = "#dnn_D31B_Pane2 a") %>% html_attr("href")
+
+# Apply the scraping function to each link and store the results
+additional_contents <- lapply(links, scrape_additional_content)
+
+# Combine and process the results as needed
 
 
 ```
 
+```{r}
+# project 3 home work
+# task2
+# Here is an example from GPT
+# Ensure the rvest package is installed and loaded
+if (!require("rvest")) install.packages("rvest")
+library(rvest)
+
+# Read the HTML content of the webpage
+url <- "https://www.cnbc.com/business/"
+download <- read_html(url)
+
+# Use appropriate CSS selectors to target the desired elements
+nodes <- html_elements(download, css = ".TrendingNowItem-title , .Card-title")
+
+# Extract the text content from the selected nodes
+text <- html_text(nodes)
+
+# Print the extracted text
+print(text)
+
+# sys.sleep(3) scrape politely to avoid being blacklised
+# Generate a random sleep time between 2 and 6 seconds
+  sleep_time <- runif(1, min = 3, max = 6)
+  
+  # Wait for the random amount of time
+  Sys.sleep(sleep_time)
+  rm(list = ls())
+```
+
+```{r}
+#project 4
+if (!require("rvest")) install.packages("rvest")
+library(rvest)
+if (!require("stringr")) install.packages("stringr")
+library(stringr)
+# Read the HTML content of the webpage
+url <- "https://www.cnbc.com/2023/01/10/the-10-best-us-jobs-of-2023-according-to-new-research.html"
+download <- read_html(url)
+
+# Use appropriate CSS selectors to target the desired elements
+nodes <- html_elements(download, css = "h3 , .ArticleBody-styles-makeit-subtitle--JP3GH")
+
+p4_name <- html_text(nodes)
+
+nodes <- html_elements(download, css = "h3+ p , .ArticleBody-styles-makeit-subtitle--JP3GH+ .group p:nth-child(1)")
+
+p4_vb <- html_text(nodes)
+
+p4_name
+
+# Define the pattern for matching "123,456"
+pattern <- "\\$\\d{2,3},\\d{3}"
+
+# Extract all matches in the text content
+matches <- str_extract_all(p4_vb, pattern)
+
+# Flatten the list of matches into a single vector
+Median_salary <- unlist(matches)
+
+# Print the matches
+print(Median_salary)
+
+# Define the pattern for matching "$123,456"
+pattern <- "\\b\\d{1,3},\\d{3}\\b"
+
+# Extract all matches in the text content
+matches <- str_extract_all(p4_vb, pattern)
+
+# Flatten the list of matches into a single vector
+Job_growth_2031 <- unlist(matches)
+
+# Print the matches
+print(Job_growth_2031)
+
+
+# Define the pattern for matching "Bachelor's degree", "Master's degree", and "Doctorate degree"
+pattern <- "requirements: (.*)"
+
+# Extract all matches in the text content
+matches <- str_match(p4_vb, pattern)
+
+# Flatten the list of matches into a single vector
+Education <- matches[,2]
+
+# Print the matches
+print(Education)
+
+df <- data.frame(
+  p4_name = p4_name,
+  Median_salary = Median_salary,
+  Job_growth_2031 = Job_growth_2031,
+  Education = Education,
+  stringsAsFactors = FALSE
+)
+df
+```
