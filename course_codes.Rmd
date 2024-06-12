@@ -114,7 +114,7 @@ nodes <- html_elements(download, css = "h3+ p , .ArticleBody-styles-makeit-subti
 
 p4_vb <- html_text(nodes)
 
-p4_name
+p4_vb
 
 # Define the pattern for matching "123,456"
 pattern <- "\\$\\d{2,3},\\d{3}"
@@ -161,4 +161,55 @@ df <- data.frame(
   stringsAsFactors = FALSE
 )
 df
+ rm(list = ls())
+```
+
+```{r}
+#project 5
+if (!require("rvest")) install.packages("rvest")
+library(rvest)
+if (!require("jsonlite")) install.packages("jsonlite")
+library(jsonlite)
+if (!require("tidyverse")) install.packages("tidyverse")
+library(jsonlite)
+
+url <- "https://swapi.dev/api/starships/"
+
+df_starships <- data.frame()
+page_url <- url
+
+# Use a while loop to download data until the 'next' field is null
+while (!is.null(page_url)) {
+  # Download the data from the current page
+  response <- fromJSON(page_url)
+  
+  # Combine the current page's data with the final dataset
+  df_starships <- bind_rows(df_starships, response$results)
+  
+  # Update the page URL to the next page
+  page_url <- response$'next'
+}
+ rm(list = ls())
+```
+
+```{r}
+#project 6
+if (!require("rvest")) install.packages("rvest")
+library(rvest)
+if (!require("jsonlite")) install.packages("jsonlite")
+library(jsonlite)
+if (!require("tidyverse")) install.packages("tidyverse")
+library(jsonlite)
+
+
+reddit_data <- fromJSON("https://www.reddit.com/r/rstats.json")
+
+df_reddit <- reddit_data$data$children$data
+
+flat_df_reddit <- flatten(df_reddit)
+
+install.packages("RedditExtractoR")
+
+library(RedditExtractoR)
+
 ```
